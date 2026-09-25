@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QR 인쇄용</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  body{font-family:Pretendard,-apple-system,"Malgun Gothic",sans-serif;margin:0;padding:24px 16px;color:#1d2320;background:#f6f5f1;word-break:keep-all}
+  .bar{max-width:520px;margin:0 auto 20px;display:flex;gap:8px;flex-wrap:wrap}
+  .bar input{flex:1 1 100%;padding:10px;border:1px solid #ccc;border-radius:8px;font:inherit}
+  .bar button{flex:1;padding:11px 16px;border:0;border-radius:8px;background:#1f5c3d;color:#fff;font:inherit;font-weight:700;cursor:pointer}
+  .bar small{flex:1 1 100%;color:#6b736e}
+  .poster{max-width:520px;margin:0 auto;background:#fff;border-radius:20px;padding:36px 28px;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+  .poster .brand{background:#1f5c3d;display:inline-block;padding:10px 18px;border-radius:12px}
+  .poster .brand img{height:34px;display:block}
+  .poster h1{font-size:26px;margin:18px 0 6px;letter-spacing:-.02em}
+  .poster p{margin:0;color:#4a524d;font-size:16px}
+  #code{display:flex;justify-content:center;margin:26px 0 18px}
+  #code img,#code canvas{width:280px;height:280px}
+  .poster .foot{font-size:13px;color:#6b736e}
+  @media print{
+    body{background:#fff;padding:0}.bar{display:none}.poster{box-shadow:none;max-width:none}
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  }
+</style>
+</head>
+<body>
+<div class="bar">
+  <input id="base" aria-label="사이트 주소">
+  <small>↑ QR에 담길 주소예요. GitHub에 올린 주소가 맞는지 확인하세요.</small>
+  <button id="go">QR 다시 만들기</button>
+  <button id="png">PNG 저장</button>
+  <button onclick="print()">인쇄</button>
+</div>
+
+<div class="poster">
+  <div class="brand"><img src="images/logo.png" alt="AMAZONA"></div>
+  <h1>오늘 함께 온 앵무새를 소개해요</h1>
+  <p>QR을 찍으면 번호표로 아이를 찾고<br>건강 검사 결과까지 확인할 수 있어요</p>
+  <div id="code"></div>
+  <div class="foot" id="url"></div>
+</div>
+
+<script src="data.js"></script>
+<script>
+const baseInput = document.getElementById("base");
+baseInput.value = location.href.replace(/qr\.html.*$/, "");
+function draw() {
+  const url = baseInput.value.trim();
+  const box = document.getElementById("code");
+  box.innerHTML = "";
+  new QRCode(box, { text: url, width: 800, height: 800, correctLevel: QRCode.CorrectLevel.M });
+  document.getElementById("url").textContent = url;
+}
+document.getElementById("go").onclick = draw;
+document.getElementById("png").onclick = () => {
+  const c = document.querySelector("#code canvas");
+  const a = document.createElement("a");
+  a.href = c.toDataURL("image/png"); a.download = "amazona-qr.png"; a.click();
+};
+draw();
+</script>
+</body>
+</html>

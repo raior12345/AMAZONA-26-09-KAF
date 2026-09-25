@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>아마조나 분양 앵무새</title>
+<meta name="description" content="행사장에 함께 온 아마조나 앵무새들의 건강 기록과 정보">
+<meta name="theme-color" content="#1f5c3d">
+<link rel="icon" href="images/logo.png">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  :root{
+    --brand:#1f5c3d; --brand-2:#2f7a52; --brand-soft:#e7f1ea;
+    --bg:#f6f5f1; --card:#fff; --ink:#1d2320; --muted:#6b736e; --line:#e6e4dc;
+    --ok:#2f7a52; --radius:18px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{font-family:Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;word-break:keep-all}
+  img{max-width:100%;display:block}
+  a{color:inherit}
+  .wrap{max-width:720px;margin:0 auto;padding:0 16px}
+
+  /* ---------- header ---------- */
+  .top{background:var(--brand);color:#fff;padding:28px 0 26px;position:relative;overflow:hidden}
+  .top .wrap{display:flex;flex-direction:column;align-items:flex-start;gap:10px}
+  .top img{width:96px;height:auto;flex:none}
+  .top h1{font-size:20px;margin:0;font-weight:800;letter-spacing:-.02em}
+  .top p{margin:2px 0 0;font-size:13.5px;opacity:.8}
+
+  /* ---------- list ---------- */
+  .finder{position:sticky;top:0;z-index:10;background:var(--bg);padding:14px 0 10px;border-bottom:1px solid var(--line)}
+  .search{display:flex;align-items:center;gap:8px;background:#fff;border:2px solid var(--line);border-radius:14px;padding:0 12px}
+  .search:focus-within{border-color:var(--brand)}
+  .search svg{flex:none;color:var(--muted)}
+  .search input{flex:1;min-width:0;border:0;outline:0;background:none;font:inherit;font-size:16px;padding:13px 0}
+  .search input::-webkit-search-cancel-button{-webkit-appearance:none;display:none}
+  .search .clear{border:0;background:#e9e8e2;border-radius:999px;width:24px;height:24px;font-size:13px;cursor:pointer;color:var(--muted)}
+  .hint{font-size:12px;color:var(--muted);margin:6px 2px 0}
+  .row-label{font-size:12px;font-weight:700;color:var(--muted);margin:12px 2px 6px}
+  .chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:0 16px}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;
+    font:inherit;font-size:14px;font-weight:600;color:#4a524d;white-space:nowrap;cursor:pointer}
+  .chip small{color:var(--muted);font-weight:600}
+  .chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+  .chip[aria-pressed="true"] small{color:rgba(255,255,255,.7)}
+  .chip .dot{width:12px;height:12px}
+
+  .group{margin:18px 0 6px}
+  .group h2{display:flex;align-items:center;gap:8px;font-size:16px;margin:0 2px 10px;font-weight:800}
+  .group h2 .dot{width:14px;height:14px}
+  .group h2 small{font-weight:600;color:var(--muted);font-size:13px;margin-left:auto}
+  .items{display:grid;gap:10px}
+  @media (min-width:600px){.items{grid-template-columns:1fr 1fr}}
+  .item{display:flex;gap:14px;align-items:center;background:var(--card);border-radius:16px;padding:10px;text-decoration:none;
+    box-shadow:0 1px 2px rgba(0,0,0,.05);transition:transform .15s}
+  .item:active{transform:scale(.98)}
+  .item .ph{flex:none;width:84px;height:84px;border-radius:12px;overflow:hidden;position:relative;background:#ddd}
+  .item .ph img{width:100%;height:100%;object-fit:cover}
+  .item .info{flex:1;min-width:0}
+  .item .tagno{display:inline-block;font-size:14.5px;font-weight:700;color:var(--ink);letter-spacing:.02em}
+  .item .mo{font-weight:700;font-size:14.5px;margin-top:4px}
+  .item .meta{font-size:12.5px;color:var(--muted)}
+  .item .go{flex:none;color:#b9bdb8;font-size:20px;padding-right:4px}
+  .item.sold{opacity:.55}
+  .item.sold .ph::after{content:"분양완료";position:absolute;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.55);color:#fff;font-weight:800;font-size:13px}
+  mark{background:#ffe27a;color:inherit;border-radius:3px}
+  .empty{text-align:center;color:var(--muted);padding:48px 16px}
+  .empty button{margin-top:12px;border:0;background:var(--ink);color:#fff;border-radius:999px;padding:10px 18px;font:inherit;font-weight:700;cursor:pointer}
+  .dot{width:9px;height:9px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
+
+  /* ---------- detail ---------- */
+  .hero{position:relative;background:#222}
+  .hero img{width:100%;aspect-ratio:4/3;object-fit:cover}
+  .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35) 0,transparent 30%,transparent 55%,rgba(0,0,0,.65))}
+  .hero .cap{position:absolute;left:0;right:0;bottom:0;z-index:1;color:#fff;padding:0 0 18px}
+  .hero .cap small{font-size:15px;opacity:.9}
+  .hero .cap h2{margin:0;font-size:28px;font-weight:800;letter-spacing:-.02em}
+  .back{position:absolute;top:12px;left:12px;z-index:2;background:rgba(255,255,255,.92);border:0;border-radius:999px;
+    padding:8px 14px 8px 10px;font:inherit;font-size:14px;font-weight:700;text-decoration:none;color:var(--ink)}
+  .sec{background:var(--card);border-radius:var(--radius);padding:18px;margin:12px 0}
+  .sec h3{margin:0 0 12px;font-size:16px;font-weight:800;color:var(--brand)}
+  .kv{display:grid;grid-template-columns:1fr 1fr;gap:14px 12px;margin:0}
+  .kv dt{font-size:12.5px;color:var(--muted);font-weight:600}
+  .kv dd{margin:2px 0 0;font-weight:700}
+  .kv dd .en{font-weight:500;color:var(--muted);font-size:13px}
+  .price{display:flex;justify-content:space-between;align-items:center;background:var(--brand);color:#fff}
+  .price b{font-size:22px}
+  .price span{opacity:.85;font-size:14px}
+  .desc{margin:0;color:#3a423d}
+  .tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+  .tag{background:var(--brand-soft);color:var(--brand);font-size:12.5px;font-weight:700;padding:4px 10px;border-radius:999px}
+  .meter{margin:14px 0 6px}
+  .meter .bar{height:10px;border-radius:999px;background:linear-gradient(90deg,#7cc08f,#f1c75b,#e36b4f);position:relative}
+  .meter .pin{position:absolute;top:50%;width:18px;height:18px;border-radius:50%;background:#fff;border:3px solid var(--ink);transform:translate(-50%,-50%)}
+  .meter .lbl{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px}
+  .note{font-size:13.5px;color:var(--muted);margin:8px 0 0}
+  .check{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid var(--line)}
+  .check:first-of-type{border-top:0;padding-top:0}
+  .check .ic{flex:none;width:28px;height:28px;border-radius:50%;background:var(--brand-soft);color:var(--ok);display:grid;place-items:center;font-weight:900}
+  .check .ic.na{background:#eee;color:#999}
+  .check b{display:block}
+  .check small{color:var(--muted);font-size:13px}
+  .thumbs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+  .thumbs button{padding:0;border:0;background:#000;border-radius:12px;overflow:hidden;cursor:zoom-in;position:relative}
+  .thumbs img{width:100%;aspect-ratio:1;object-fit:cover}
+  .thumbs span{position:absolute;left:6px;bottom:6px;background:rgba(0,0,0,.6);color:#fff;font-size:11px;padding:2px 7px;border-radius:999px}
+  .cert{margin-top:10px;width:100%;border:1px solid var(--line);border-radius:12px;padding:0;background:#fff;cursor:zoom-in;overflow:hidden}
+  .cta{display:block;text-align:center;background:var(--ink);color:#fff;text-decoration:none;font-weight:800;padding:16px;border-radius:14px;margin:16px 0 8px}
+  .disclaimer{font-size:12px;color:var(--muted);text-align:center;margin:10px 0 36px}
+
+  footer{text-align:center;font-size:12px;color:var(--muted);padding:8px 0 32px}
+
+  /* ---------- lightbox ---------- */
+  .lb{position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
+  .lb.on{display:flex}
+  .lb img{max-height:100%;max-width:100%;object-fit:contain}
+  .lb button{position:absolute;top:14px;right:14px;background:#fff;border:0;border-radius:999px;width:40px;height:40px;font-size:20px;cursor:pointer}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="lb" id="lb" role="dialog" aria-modal="true"><button aria-label="닫기">✕</button><img alt=""></div>
+
+<script src="data.js"></script>
+<script>
+const $app = document.getElementById("app");
+const won = n => n.toLocaleString("ko-KR") + "원";
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmtDate = d => d.slice(2).replace(/-/g, ".");
+const ageDays = d => Math.max(0, Math.floor((Date.now() - new Date(d + "T00:00:00+09:00")) / 864e5));
+const sexKo = s => s === "M" ? "수컷 ♂" : s === "F" ? "암컷 ♀" : "미확인";
+// 목록 화면 상태 (상세 페이지 갔다 와도 유지)
+const state = { species: "all", morph: "all", q: "", scroll: 0 };
+
+function header() {
+  return `<header class="top"><div class="wrap">
+    <img src="images/logo.png" alt="AMAZONA">
+    <div><h1>${esc(EVENT.title)}</h1><p>${esc(EVENT.subtitle)}</p></div>
+  </div></header>`;
+}
+
+// 번호표 끝자리: "AMZN 26 86" → "86"
+const tail = b => b.no.split(" ").pop();
+const norm = s => s.replace(/\s/g, "").toUpperCase();
+const count = f => BIRDS.filter(f).length;
+
+function matches(b) {
+  if (state.species !== "all" && b.species !== state.species) return false;
+  if (state.morph !== "all" && b.morph !== state.morph) return false;
+  const q = norm(state.q);
+  if (!q) return true;
+  const s = SPECIES[b.species], m = MORPHS[b.morph];
+  return norm(b.no).includes(q) || norm(m.ko + m.en + s.ko + s.en).includes(q);
+}
+
+function renderList() {
+  document.title = "아마조나 분양 앵무새";
+  $app.innerHTML = header() + `<main class="wrap">
+    <div class="finder">
+      <label class="search">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q" type="search" inputmode="search" autocomplete="off" placeholder="번호표 번호로 찾기 (예: 86, X2)" value="${esc(state.q)}" aria-label="번호 또는 이름 검색">
+        <button class="clear" id="clear" type="button" aria-label="지우기" ${state.q ? "" : "hidden"}>✕</button>
+      </label>
+      <div class="row-label">종류</div>
+      <div class="chips" id="species"></div>
+      <div class="row-label">색깔 (모프)</div>
+      <div class="chips" id="morphs"></div>
+    </div>
+    <div id="results"></div>
+  </main><footer>ⓒ AMAZONA · 궁금한 아이를 눌러 자세한 정보를 확인하세요</footer>`;
+
+  const $q = document.getElementById("q"), $clear = document.getElementById("clear");
+  $q.oninput = () => { state.q = $q.value; $clear.hidden = !state.q; update(); };
+  $clear.onclick = () => { state.q = ""; $q.value = ""; $clear.hidden = true; update(); $q.focus(); };
+  update();
+  requestAnimationFrame(() => window.scrollTo(0, state.scroll));
+}
+
+// 검색창은 그대로 두고 필터 칩과 결과만 다시 그림 (입력 중 키보드가 닫히지 않게)
+function update() {
+  const speciesOpts = [["all", "전체", count(() => true)],
+    ...Object.entries(SPECIES).map(([k, v]) => [k, v.ko, count(b => b.species === k)])];
+  const morphKeys = [...new Set(BIRDS.filter(b => state.species === "all" || b.species === state.species).map(b => b.morph))];
+  if (state.morph !== "all" && !morphKeys.includes(state.morph)) state.morph = "all";
+
+  const chip = (group, key, label, n, dot) =>
+    `<button class="chip" data-g="${group}" data-k="${key}" aria-pressed="${state[group] === key}">${
+      dot ? `<span class="dot" style="background:${dot}"></span>` : ""}${esc(label)} <small>${n}</small></button>`;
+  document.getElementById("species").innerHTML = speciesOpts.map(([k, l, n]) => chip("species", k, l, n)).join("");
+  document.getElementById("morphs").innerHTML = chip("morph", "all", "전체", morphKeys.reduce((a, k) => a + count(b => b.morph === k), 0)) +
+    morphKeys.map(k => chip("morph", k, MORPHS[k].ko, count(b => b.morph === k), MORPHS[k].color)).join("");
+  document.querySelectorAll(".finder .chip").forEach(c => c.onclick = () => { state[c.dataset.g] = c.dataset.k; update(); });
+
+  const list = BIRDS.filter(matches);
+  const $r = document.getElementById("results");
+  if (!list.length) {
+    $r.innerHTML = `<div class="empty">찾는 아이가 없어요.<br>번호표의 마지막 두 자리를 입력해 보세요.<br><button type="button" id="reset">전체 보기</button></div>`;
+    document.getElementById("reset").onclick = () => { Object.assign(state, { species: "all", morph: "all", q: "" }); renderList(); };
+    return;
+  }
+  // 종 + 모프별로 묶어서 보여주기
+  const groups = [];
+  list.forEach(b => {
+    const key = b.species + "/" + b.morph;
+    let g = groups.find(x => x.key === key);
+    if (!g) groups.push(g = { key, s: SPECIES[b.species], m: MORPHS[b.morph], items: [] });
+    g.items.push(b);
+  });
+  const q = norm(state.q);
+  const hl = t => q && norm(t).includes(q) ? `<mark>${esc(t)}</mark>` : esc(t);
+  $r.innerHTML = groups.map(g => `<section class="group">
+    <h2><span class="dot" style="background:${g.m.color}"></span>${esc(g.m.ko)} ${esc(g.s.ko)}<small>${g.items.length}마리</small></h2>
+    <div class="items">${g.items.map(b => `<a class="item${b.sold ? " sold" : ""}" href="#/${b.id}">
+      <div class="ph"><img src="${b.photo}" alt="" loading="lazy"></div>
+      <div class="info">
+        <span class="tagno">${esc(b.no.slice(0, -tail(b).length))}${hl(tail(b))}</span>
+        <div class="mo">${sexKo(b.sex)} · 생후 ${ageDays(b.hatch)}일</div>
+        <div class="meta">${b.sold ? "분양 완료" : won(b.price)}</div>
+      </div><span class="go" aria-hidden="true">›</span></a>`).join("")}</div>
+  </section>`).join("");
+}
+
+function renderBird(b) {
+  const s = SPECIES[b.species], m = MORPHS[b.morph];
+  document.title = `${m.ko} ${s.ko} · ${b.no}`;
+  $app.innerHTML = `
+  <div class="hero">
+    <a class="back" href="#/">← 전체 보기</a>
+    <img src="${b.photo}" alt="${esc(m.ko + " " + s.ko)}">
+    <div class="cap"><div class="wrap"><small>${esc(m.ko)} ${esc(m.en)}</small><h2>${esc(s.ko)}</h2></div></div>
+  </div>
+  <main class="wrap">
+    <section class="sec price"><span>${b.sold ? "분양 완료" : "분양가"}</span><b>${b.sold ? "🎉" : won(b.price)}</b></section>
+
+    <section class="sec">
+      <h3>기본 정보</h3>
+      <dl class="kv">
+        <div><dt>개체 번호</dt><dd>${esc(b.no)}</dd></div>
+        <div><dt>성별</dt><dd>${sexKo(b.sex)}</dd></div>
+        <div><dt>탄생일</dt><dd>${fmtDate(b.hatch)} <span class="en">(생후 ${ageDays(b.hatch)}일)</span></dd></div>
+        <div><dt>종</dt><dd>${esc(s.ko)} <span class="en">${esc(s.en)}</span></dd></div>
+        <div><dt>아빠 새</dt><dd>${esc(b.dad)}</dd></div>
+        <div><dt>엄마 새</dt><dd>${esc(b.mom)}</dd></div>
+      </dl>
+    </section>
+
+    <section class="sec">
+      <h3><span class="dot" style="display:inline-block;background:${m.color};margin-right:6px"></span>모프 · ${esc(m.ko)} ${esc(m.en)}</h3>
+      <p class="desc">${esc(m.desc)}</p>
+    </section>
+
+    <section class="sec">
+      <h3>${esc(s.ko)}는 어떤 새인가요?</h3>
+      <div class="tags"><span class="tag">수명 ${esc(s.lifespan)}</span><span class="tag">${esc(s.size)} 앵무</span></div>
+      <p class="desc">${esc(s.feature)}</p>
+      <div class="meter" aria-label="소음 수준">
+        <div class="bar"><span class="pin" style="left:${s.noise}%"></span></div>
+        <div class="lbl"><span>조용함</span><span>소음</span><span>시끄러움</span></div>
+      </div>
+      <p class="note">${esc(s.noiseNote)}</p>
+    </section>
+
+    <section class="sec">
+      <h3>건강 검사 결과</h3>
+      <div class="check"><span class="ic">✓</span><div>
+        <b>PDD / PBFD / 앵무병 — 음성</b>
+        <small>경기도(북부) 동물위생시험소 유전자 검사(RT-PCR) · 병원체 불검출 (2026.09.01)</small>
+        <button class="cert" data-zoom="images/lab-certificate.jpg" aria-label="검사 성적서 크게 보기"><img src="images/lab-certificate.jpg" alt="동물위생시험소 검사 성적서" loading="lazy"></button>
+      </div></div>
+      ${b.xray ? `<div class="check"><span class="ic">✓</span><div>
+        <b>X-RAY — 이상 없음 소견</b>
+        <small>${esc(XRAY_HOSPITAL.name)} · ${esc(XRAY_HOSPITAL.address)}</small>
+        <p class="note" style="color:#3a423d">“${esc(XRAY_OPINION)}”</p>
+        <div class="thumbs">${b.xray.map((src, i) => `<button data-zoom="${src}" aria-label="X-RAY ${i + 1} 크게 보기"><img src="${src}" alt="X-RAY ${i + 1}" loading="lazy"><span>사진#${i + 1}</span></button>`).join("")}</div>
+      </div></div>` : `<div class="check"><span class="ic na">–</span><div><b>X-RAY / CT</b><small>미실시</small></div></div>`}
+    </section>
+
+    <a class="cta" href="${EVENT.contactUrl}" target="_blank" rel="noopener">아마조나 분양 문의하기 →</a>
+    <p class="disclaimer">오진이 발생한 경우 병원 측의 책임이 없음을 알려드리며, 계약서의 보상 항목에 의거<br>치명적 질병 혹은 장애의 경우 당사(아마조나)에서 책임 및 보상을 진행합니다.</p>
+  </main>`;
+  $app.querySelectorAll("[data-zoom]").forEach(el => el.onclick = () => openLb(el.dataset.zoom));
+}
+
+// ---------- lightbox ----------
+const lb = document.getElementById("lb");
+function openLb(src) { lb.querySelector("img").src = src; lb.classList.add("on"); }
+lb.onclick = () => lb.classList.remove("on");
+document.addEventListener("keydown", e => e.key === "Escape" && lb.classList.remove("on"));
+
+// ---------- router: #/AMZN2686 → 개별 페이지 ----------
+let onList = false;
+function route() {
+  const id = decodeURIComponent(location.hash.replace(/^#\/?/, "")).replace(/\s/g, "").toUpperCase();
+  const bird = BIRDS.find(b => b.id === id);
+  if (onList) state.scroll = window.scrollY; // 목록 스크롤 위치 기억
+  onList = !bird;
+  if (bird) { renderBird(bird); window.scrollTo(0, 0); } else renderList();
+}
+addEventListener("hashchange", route);
+route();
+</script>
+</body>
+</html>
