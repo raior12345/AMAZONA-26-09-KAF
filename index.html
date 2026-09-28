@@ -6,121 +6,267 @@
 <title>아마조나 분양 앵무새</title>
 <meta name="description" content="행사장에 함께 온 아마조나 앵무새들의 건강 기록과 정보">
 <meta name="theme-color" content="#1f5c3d">
+<meta property="og:type" content="website">
+<meta property="og:title" content="KAF에서 만나는 아마조나 앵무새">
+<meta property="og:description" content="행사장에 함께 온 앵무새들의 정보와 건강 검사 기록">
+<meta property="og:image" content="https://raior12345.github.io/AMAZONA-26-09-KAF/images/AMZN2682.jpg">
 <link rel="icon" href="images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.min.css">
 <style>
+  /* 색상 토큰: 항상 밝은 화면 (다크 모드 사용 안 함) */
   :root{
-    --brand:#1f5c3d; --brand-2:#2f7a52; --brand-soft:#e7f1ea;
-    --bg:#f6f5f1; --card:#fff; --ink:#1d2320; --muted:#6b736e; --line:#e6e4dc;
-    --ok:#2f7a52; --radius:18px;
+    color-scheme:light;
+    --brand:#1f5c3d; --brand-ink:#1f5c3d; --brand-soft:#e5efe8;
+    --bg:#f8f9f6; --card:#fdfdfb; --ink:#1b211e; --on-ink:#fdfdfb; --text:#39413c; --muted:#66706a; --line:#e2e5df;
+    --field:#fdfdfb; --chip-count:#66706a; --thumb:#dfe3de;
+    --shadow:0 1px 2px rgb(31 60 45 / .06), 0 4px 14px -6px rgb(31 60 45 / .12);
+    --shadow-press:0 1px 1px rgb(31 60 45 / .08);
+    --mark:#ffe27a; --mark-ink:#1b211e;
+    /* 모서리 규칙: 큰 카드 18px, 카드 안 요소 12px, 누르는 칩·버튼은 완전 둥글게 */
+    --r-lg:18px; --r-md:12px; --r-pill:999px;
+    --ease:cubic-bezier(.16,1,.3,1);
   }
   *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
   html,body{margin:0}
   body{font-family:Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
-    background:var(--bg);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;word-break:keep-all}
+    background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;word-break:keep-all;
+    font-variant-numeric:tabular-nums}
   img{max-width:100%;display:block}
   a{color:inherit}
+  h1,h2,h3{text-wrap:balance}
+  p{text-wrap:pretty}
   .wrap{max-width:720px;margin:0 auto;padding:0 16px}
+  :focus-visible{outline:2px solid var(--brand-ink);outline-offset:2px;border-radius:6px}
+  .skip{position:absolute;left:12px;top:-60px;z-index:60;background:var(--ink);color:var(--on-ink);padding:10px 14px;border-radius:var(--r-md);
+    font-weight:700;text-decoration:none}
+  .skip:focus{top:12px}
 
   /* ---------- header ---------- */
-  .top{background:var(--brand);color:#fff;padding:28px 0 26px;position:relative;overflow:hidden}
+  .top{background:var(--brand);color:#f4f7f5;padding:26px 0 24px;position:relative;overflow:hidden;
+    background-image:radial-gradient(120% 90% at 100% 0%, rgb(255 255 255 / .09), transparent 60%)}
   .top .wrap{display:flex;flex-direction:column;align-items:flex-start;gap:10px}
   .top img{width:96px;height:auto;flex:none}
-  .top h1{font-size:20px;margin:0;font-weight:800;letter-spacing:-.02em}
-  .top p{margin:2px 0 0;font-size:13.5px;opacity:.8}
+  .top h1{font-size:21px;margin:0;font-weight:800;letter-spacing:-.025em;line-height:1.3}
+  .top p{margin:2px 0 0;font-size:14px;opacity:.82}
 
   /* ---------- list ---------- */
-  .finder{position:sticky;top:0;z-index:10;background:var(--bg);padding:14px 0 10px;border-bottom:1px solid var(--line)}
-  .search{display:flex;align-items:center;gap:8px;background:#fff;border:2px solid var(--line);border-radius:14px;padding:0 12px}
-  .search:focus-within{border-color:var(--brand)}
+  .finder{position:sticky;top:0;z-index:10;background:var(--bg);padding:14px 0 12px;border-bottom:1px solid var(--line)}
+  .search{display:flex;align-items:center;gap:8px;background:var(--field);border:2px solid var(--line);border-radius:var(--r-md);padding:0 12px;
+    transition:border-color .2s var(--ease)}
+  .search:focus-within{border-color:var(--brand-ink)}
   .search svg{flex:none;color:var(--muted)}
-  .search input{flex:1;min-width:0;border:0;outline:0;background:none;font:inherit;font-size:16px;padding:13px 0}
+  .search input{flex:1;min-width:0;border:0;outline:0;background:none;color:var(--ink);font:inherit;font-size:16px;padding:13px 0}
+  .search input::placeholder{color:var(--muted)}
   .search input::-webkit-search-cancel-button{-webkit-appearance:none;display:none}
-  .search .clear{border:0;background:#e9e8e2;border-radius:999px;width:24px;height:24px;font-size:13px;cursor:pointer;color:var(--muted)}
-  .hint{font-size:12px;color:var(--muted);margin:6px 2px 0}
-  .row-label{font-size:12px;font-weight:700;color:var(--muted);margin:12px 2px 6px}
-  .chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:0 16px}
+  .search .clear{border:0;background:var(--line);border-radius:var(--r-pill);width:26px;height:26px;font-size:13px;cursor:pointer;color:var(--muted)}
+  .row-label{font-size:12.5px;font-weight:600;color:var(--muted);margin:12px 2px 6px}
+  .chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:2px 16px}
   .chips::-webkit-scrollbar{display:none}
-  .chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;
-    font:inherit;font-size:14px;font-weight:600;color:#4a524d;white-space:nowrap;cursor:pointer}
-  .chip small{color:var(--muted);font-weight:600}
-  .chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
-  .chip[aria-pressed="true"] small{color:rgba(255,255,255,.7)}
+  .chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--card);border-radius:var(--r-pill);padding:8px 14px;
+    font:inherit;font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;cursor:pointer;
+    transition:background-color .2s var(--ease),color .2s var(--ease),border-color .2s var(--ease),transform .15s var(--ease)}
+  .chip:hover{border-color:var(--muted)}
+  .chip:active{transform:scale(.97)}
+  .chip small{color:var(--chip-count);font-weight:600}
+  .chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--on-ink)}
+  .chip[aria-pressed="true"] small{color:inherit;opacity:.7}
   .chip .dot{width:12px;height:12px}
 
-  .group{margin:18px 0 6px}
-  .group h2{display:flex;align-items:center;gap:8px;font-size:16px;margin:0 2px 10px;font-weight:800}
+  .group{margin:22px 0 6px}
+  .group h2{display:flex;align-items:center;gap:8px;font-size:16px;margin:0 2px 10px;font-weight:700;letter-spacing:-.01em}
   .group h2 .dot{width:14px;height:14px}
-  .group h2 small{font-weight:600;color:var(--muted);font-size:13px;margin-left:auto}
+  .group h2 small{font-weight:500;color:var(--muted);font-size:13px;margin-left:auto}
   .items{display:grid;gap:10px}
   @media (min-width:600px){.items{grid-template-columns:1fr 1fr}}
-  .item{display:flex;gap:14px;align-items:center;background:var(--card);border-radius:16px;padding:10px;text-decoration:none;
-    box-shadow:0 1px 2px rgba(0,0,0,.05);transition:transform .15s}
-  .item:active{transform:scale(.98)}
-  .item .ph{flex:none;width:84px;height:84px;border-radius:12px;overflow:hidden;position:relative;background:#ddd}
+  .item{display:flex;gap:14px;align-items:center;background:var(--card);border-radius:var(--r-lg);padding:10px;text-decoration:none;
+    box-shadow:var(--shadow);transition:transform .2s var(--ease),box-shadow .2s var(--ease)}
+  .item:hover{transform:translateY(-1px)}
+  .item:active{transform:scale(.98);box-shadow:var(--shadow-press)}
+  .item .ph{flex:none;width:84px;height:84px;border-radius:var(--r-md);overflow:hidden;position:relative;background:var(--thumb)}
   .item .ph img{width:100%;height:100%;object-fit:cover}
   .item .info{flex:1;min-width:0}
-  .item .tagno{display:inline-block;font-size:14.5px;font-weight:700;color:var(--ink);letter-spacing:.02em}
-  .item .mo{font-weight:700;font-size:14.5px;margin-top:4px}
-  .item .meta{font-size:12.5px;color:var(--muted)}
-  .item .go{flex:none;color:#b9bdb8;font-size:20px;padding-right:4px}
+  .item .tagno{display:inline-block;font-size:15px;font-weight:700;color:var(--ink);letter-spacing:.01em}
+  .item .mo{font-weight:500;font-size:14px;margin-top:2px;color:var(--text)}
+  .item .meta{font-size:14px;font-weight:600;color:var(--ink);margin-top:1px}
+  .item .go{flex:none;color:var(--muted);font-size:20px;padding-right:4px;transition:transform .2s var(--ease)}
+  .item:hover .go{transform:translateX(2px)}
   .item.sold{opacity:.55}
-  .item.sold .ph::after{content:"분양완료";position:absolute;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.55);color:#fff;font-weight:800;font-size:13px}
-  mark{background:#ffe27a;color:inherit;border-radius:3px}
+  .item.sold .ph::after{content:"분양완료";position:absolute;inset:0;display:grid;place-items:center;background:rgb(16 20 18 / .6);color:#fff;font-weight:700;font-size:13px}
+  mark{background:var(--mark);color:var(--mark-ink);border-radius:3px;padding:0 1px}
   .empty{text-align:center;color:var(--muted);padding:48px 16px}
-  .empty button{margin-top:12px;border:0;background:var(--ink);color:#fff;border-radius:999px;padding:10px 18px;font:inherit;font-weight:700;cursor:pointer}
-  .dot{width:9px;height:9px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
+  .empty button{margin-top:14px;border:0;background:var(--ink);color:var(--on-ink);border-radius:var(--r-pill);padding:11px 20px;font:inherit;font-weight:700;cursor:pointer}
+  .dot{width:9px;height:9px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1px rgb(0 0 0 / .14)}
 
   /* ---------- detail ---------- */
-  .hero{position:relative;background:#222}
+  .hero{position:relative;background:var(--thumb)}
   .hero img{width:100%;aspect-ratio:4/3;object-fit:cover}
-  .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35) 0,transparent 30%,transparent 55%,rgba(0,0,0,.65))}
-  .hero .cap{position:absolute;left:0;right:0;bottom:0;z-index:1;color:#fff;padding:0 0 18px}
-  .hero .cap small{font-size:15px;opacity:.9}
-  .hero .cap h2{margin:0;font-size:28px;font-weight:800;letter-spacing:-.02em}
-  .back{position:absolute;top:12px;left:12px;z-index:2;background:rgba(255,255,255,.92);border:0;border-radius:999px;
-    padding:8px 14px 8px 10px;font:inherit;font-size:14px;font-weight:700;text-decoration:none;color:var(--ink)}
-  .sec{background:var(--card);border-radius:var(--radius);padding:18px;margin:12px 0}
-  .sec h3{margin:0 0 12px;font-size:16px;font-weight:800;color:var(--brand)}
+  .hero::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(180deg,rgb(0 0 0 / .32) 0,transparent 28%,transparent 50%,rgb(10 18 14 / .72))}
+  .hero .cap{position:absolute;left:0;right:0;bottom:0;z-index:1;color:#fff;padding:0 0 34px}
+  .hero .cap small{font-size:15px;opacity:.92}
+  .hero .cap h2{margin:0;font-size:30px;font-weight:800;letter-spacing:-.03em;line-height:1.2}
+  .back{position:absolute;top:12px;left:12px;z-index:2;background:rgb(253 253 251 / .94);color:#1b211e;border-radius:var(--r-pill);
+    padding:8px 14px 8px 11px;font-size:14px;font-weight:700;text-decoration:none;box-shadow:0 2px 10px rgb(0 0 0 / .15);
+    transition:transform .15s var(--ease)}
+  .back:active{transform:scale(.96)}
+  .sec{background:var(--card);border-radius:var(--r-lg);padding:18px;margin:12px 0;box-shadow:var(--shadow)}
+  .sec h3{margin:0 0 12px;font-size:16px;font-weight:700;color:var(--brand-ink);letter-spacing:-.01em}
+  .summary{background:var(--brand);color:#f4f7f5;margin-top:-22px;position:relative;z-index:2}
+  .summary .row{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+  .summary .lbl{font-size:14px;opacity:.85}
+  .summary b{font-size:24px;letter-spacing:-.02em}
+  .summary .facts{display:flex;flex-wrap:wrap;gap:4px 16px;margin:10px 0 0;padding:10px 0 0;border-top:1px solid rgb(255 255 255 / .18);
+    font-size:13.5px;font-weight:500;opacity:.92;list-style:none}
   .kv{display:grid;grid-template-columns:1fr 1fr;gap:14px 12px;margin:0}
-  .kv dt{font-size:12.5px;color:var(--muted);font-weight:600}
+  .kv dt{font-size:12.5px;color:var(--muted);font-weight:500}
   .kv dd{margin:2px 0 0;font-weight:700}
   .kv dd .en{font-weight:500;color:var(--muted);font-size:13px}
-  .price{display:flex;justify-content:space-between;align-items:center;background:var(--brand);color:#fff}
-  .price b{font-size:22px}
-  .price span{opacity:.85;font-size:14px}
-  .desc{margin:0;color:#3a423d}
+  .desc{margin:0;color:var(--text);max-width:65ch}
   .tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
-  .tag{background:var(--brand-soft);color:var(--brand);font-size:12.5px;font-weight:700;padding:4px 10px;border-radius:999px}
-  .meter{margin:14px 0 6px}
-  .meter .bar{height:10px;border-radius:999px;background:linear-gradient(90deg,#7cc08f,#f1c75b,#e36b4f);position:relative}
-  .meter .pin{position:absolute;top:50%;width:18px;height:18px;border-radius:50%;background:#fff;border:3px solid var(--ink);transform:translate(-50%,-50%)}
+  .tag{background:var(--brand-soft);color:var(--brand-ink);font-size:12.5px;font-weight:600;padding:4px 10px;border-radius:var(--r-pill)}
+  .meter{margin:16px 0 6px}
+  .meter .bar{height:8px;border-radius:var(--r-pill);background:linear-gradient(90deg,#7cc08f,#e9c25e,#d9735a);position:relative}
+  .meter .pin{position:absolute;top:50%;width:18px;height:18px;border-radius:50%;background:var(--card);border:3px solid var(--ink);transform:translate(-50%,-50%)}
   .meter .lbl{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px}
   .note{font-size:13.5px;color:var(--muted);margin:8px 0 0}
-  .check{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid var(--line)}
+  .check{display:flex;gap:12px;align-items:flex-start;padding:14px 0;border-top:1px solid var(--line)}
   .check:first-of-type{border-top:0;padding-top:0}
-  .check .ic{flex:none;width:28px;height:28px;border-radius:50%;background:var(--brand-soft);color:var(--ok);display:grid;place-items:center;font-weight:900}
-  .check .ic.na{background:#eee;color:#999}
+  .check > div{flex:1;min-width:0}
+  .check .ic{flex:none;width:28px;height:28px;border-radius:50%;background:var(--brand-soft);color:var(--brand-ink);display:grid;place-items:center;font-weight:800}
+  .check .ic.na{background:var(--line);color:var(--muted)}
   .check b{display:block}
   .check small{color:var(--muted);font-size:13px}
-  .thumbs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-  .thumbs button{padding:0;border:0;background:#000;border-radius:12px;overflow:hidden;cursor:zoom-in;position:relative}
+  .quote{font-size:13.5px;color:var(--text);margin:8px 0 0}
+  .thumbs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0 0;padding:0}
+  .thumbs figure{margin:0}
+  .thumbs button{display:block;width:100%;padding:0;border:0;background:#0d0f0e;border-radius:var(--r-md);overflow:hidden;cursor:zoom-in;
+    transition:transform .15s var(--ease)}
+  .thumbs button:active,.cert:active{transform:scale(.98)}
   .thumbs img{width:100%;aspect-ratio:1;object-fit:cover}
-  .thumbs span{position:absolute;left:6px;bottom:6px;background:rgba(0,0,0,.6);color:#fff;font-size:11px;padding:2px 7px;border-radius:999px}
-  .cert{margin-top:10px;width:100%;border:1px solid var(--line);border-radius:12px;padding:0;background:#fff;cursor:zoom-in;overflow:hidden}
-  .cta{display:block;text-align:center;background:var(--ink);color:#fff;text-decoration:none;font-weight:800;padding:16px;border-radius:14px;margin:16px 0 8px}
+  .thumbs figcaption{font-size:12.5px;color:var(--muted);margin-top:5px;font-weight:600}
+  .cert{display:block;margin-top:10px;width:100%;border:1px solid var(--line);border-radius:var(--r-md);padding:0;background:#fff;cursor:zoom-in;overflow:hidden;
+    transition:transform .15s var(--ease)}
+  .certnote{display:block;margin-top:6px}
+  .pager{display:flex;align-items:stretch;gap:8px;margin:4px 0 8px}
+  .pg{flex:1;min-width:0;background:var(--card);border-radius:var(--r-md);padding:10px 12px;text-decoration:none;box-shadow:var(--shadow);
+    transition:transform .15s var(--ease)}
+  .pg:active{transform:scale(.97)}
+  .pg.next{text-align:right}
+  .pg.off{background:none;box-shadow:none}
+  .pg small{display:block;font-size:12px;color:var(--muted)}
+  .pg b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pager .pos{align-self:center;font-size:12px;color:var(--muted);font-weight:600;white-space:nowrap}
+  .cta{display:block;text-align:center;background:var(--ink);color:var(--on-ink);text-decoration:none;font-weight:700;padding:16px;border-radius:var(--r-pill);margin:18px 0 10px;
+    transition:transform .15s var(--ease),opacity .2s}
+  .cta:hover{opacity:.92}
+  .cta:active{transform:scale(.98)}
   .disclaimer{font-size:12px;color:var(--muted);text-align:center;margin:10px 0 36px}
 
-  footer{text-align:center;font-size:12px;color:var(--muted);padding:8px 0 32px}
+  footer{text-align:center;font-size:12px;color:var(--muted);padding:12px 0 36px}
 
   /* ---------- lightbox ---------- */
-  .lb{position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
+  .lb{position:fixed;inset:0;background:rgb(8 10 9 / .94);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
   .lb.on{display:flex}
   .lb img{max-height:100%;max-width:100%;object-fit:contain}
-  .lb button{position:absolute;top:14px;right:14px;background:#fff;border:0;border-radius:999px;width:40px;height:40px;font-size:20px;cursor:pointer}
+  .lb button{position:absolute;top:14px;right:14px;background:#fdfdfb;color:#1b211e;border:0;border-radius:var(--r-pill);width:44px;height:44px;font-size:18px;cursor:pointer}
+
+  /* ---------- motion: 목록이 순서대로 나타남 (움직임 줄이기 설정이면 끔) ---------- */
+  @media (prefers-reduced-motion: no-preference){
+    .items .item{animation:rise .45s var(--ease) backwards;animation-delay:calc(var(--i, 0) * 35ms)}
+    .detail > *{animation:rise .5s var(--ease) both}
+    .lb.on img{animation:zoom .25s var(--ease) both}
+  }
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  @keyframes zoom{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none !important;animation:none !important}}
+  /* ================= high-end-visual-design 레이어 =================
+     방향: Soft Structuralism (밝은 실버/화이트, 아주 부드럽게 퍼지는 그림자)
+     - 카드: 이중 베젤 (바깥 쉘 + 안쪽 코어). box-shadow 스프레드로 만들어 모서리가 동심원으로 맞음
+     - 회색 1px 테두리 대신 초록빛이 도는 아주 옅은 헤어라인
+     - 모든 움직임은 cubic-bezier(.32,.72,0,1) */
+  :root{
+    --ease:cubic-bezier(.32,.72,0,1);
+    --bg:#f7f8f5;
+    --hair:rgb(31 60 45 / .08);
+    --bezel:
+      inset 0 1px 0 rgb(255 255 255 / .9),
+      0 0 0 5px rgb(255 255 255 / .75),
+      0 0 0 6px var(--hair),
+      0 24px 48px -28px rgb(31 60 45 / .28),
+      0 6px 16px -10px rgb(31 60 45 / .12);
+    --bezel-press:
+      inset 0 1px 0 rgb(255 255 255 / .9),
+      0 0 0 5px rgb(255 255 255 / .75),
+      0 0 0 6px var(--hair),
+      0 8px 18px -14px rgb(31 60 45 / .25);
+  }
+  body{font-family:"Plus Jakarta Sans",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+    background:var(--bg) radial-gradient(90% 60% at 50% 0%, #ffffff 0%, transparent 70%) no-repeat}
+
+  /* 헤더: 아래쪽을 둥글게 떠 있는 판처럼 */
+  .top{border-radius:0 0 28px 28px;padding:28px 0 30px;
+    box-shadow:inset 0 -1px 0 rgb(255 255 255 / .06), 0 20px 40px -24px rgb(31 92 61 / .55)}
+  .top h1{font-size:23px;letter-spacing:-.03em}
+
+  /* 검색·필터: 화면 위에 떠 있는 유리판 (sticky 요소에만 blur 사용) */
+  .finder{top:8px;margin:14px -6px 0;padding:12px 12px 12px;border-bottom:0;border-radius:24px;overflow:hidden;
+    background:rgb(247 248 245 / .78);-webkit-backdrop-filter:blur(18px) saturate(160%);backdrop-filter:blur(18px) saturate(160%);
+    box-shadow:0 0 0 1px var(--hair), 0 18px 40px -26px rgb(31 60 45 / .35)}
+  .chips{margin:0 -12px;padding:2px 12px 4px}
+  .search{border:0;border-radius:16px;box-shadow:inset 0 1px 0 #fff, 0 0 0 1px var(--hair), 0 4px 12px -8px rgb(31 60 45 / .2);
+    transition:box-shadow .4s var(--ease)}
+  .search:focus-within{box-shadow:inset 0 1px 0 #fff, 0 0 0 2px var(--brand-ink), 0 8px 20px -12px rgb(31 92 61 / .45)}
+  .chip{border:0;box-shadow:0 0 0 1px var(--hair), 0 2px 6px -4px rgb(31 60 45 / .2);
+    transition:background-color .4s var(--ease),color .4s var(--ease),box-shadow .4s var(--ease),transform .4s var(--ease)}
+  .chip:hover{box-shadow:0 0 0 1px rgb(31 60 45 / .2), 0 4px 10px -6px rgb(31 60 45 / .3)}
+  .chip[aria-pressed="true"]{box-shadow:0 6px 14px -8px rgb(27 33 30 / .6)}
+
+  /* 목록 카드: 이중 베젤 */
+  .group{margin:30px 0 8px}
+  .items{gap:18px;padding:6px}
+  .item{border-radius:20px;padding:10px;box-shadow:var(--bezel);
+    transition:transform .6s var(--ease),box-shadow .6s var(--ease)}
+  .item:hover{transform:translateY(-2px)}
+  .item:active{transform:scale(.985);box-shadow:var(--bezel-press)}
+  .item .ph{border-radius:14px;box-shadow:0 0 0 1px var(--hair)}
+  .item .go{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;padding:0;font-size:17px;
+    background:var(--bg);box-shadow:0 0 0 1px var(--hair);transition:transform .6s var(--ease),background-color .4s var(--ease)}
+  .item:hover .go{transform:translate(2px,-1px) scale(1.05);background:var(--brand-soft)}
+
+  /* 상세: 섹션 카드도 이중 베젤 */
+  .sec{border-radius:22px;padding:20px;margin:22px 6px;box-shadow:var(--bezel)}
+  .summary{margin-top:-26px;box-shadow:inset 0 1px 0 rgb(255 255 255 / .12), 0 0 0 5px rgb(255 255 255 / .7), 0 0 0 6px var(--hair),
+    0 24px 44px -24px rgb(31 92 61 / .55)}
+  .check{border-top:1px solid var(--hair)}
+  .thumbs button,.cert{border-radius:14px;box-shadow:0 0 0 1px var(--hair);border:0;transition:transform .5s var(--ease)}
+  .pager{margin:4px 6px 8px;gap:12px}
+  .pg{border-radius:18px;box-shadow:var(--bezel);transition:transform .5s var(--ease)}
+
+  /* CTA: 알약 버튼 + 안쪽 원형 아이콘 (button-in-button) */
+  .cta{display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;padding:8px 8px 8px 24px;margin:26px 6px 12px;
+    box-shadow:0 18px 36px -18px rgb(27 33 30 / .6);transition:transform .5s var(--ease),box-shadow .5s var(--ease)}
+  .cta:hover{opacity:1;box-shadow:0 22px 40px -18px rgb(27 33 30 / .7)}
+  .cta .cta-ic{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:rgb(255 255 255 / .12);
+    font-size:18px;transition:transform .5s var(--ease),background-color .4s var(--ease)}
+  .cta:hover .cta-ic{transform:translate(2px,-1px) scale(1.05);background:rgb(255 255 255 / .2)}
+  .back{transition:transform .5s var(--ease)}
+
+  /* 스크롤 진입: 화면에 들어올 때 천천히 떠오름 (IntersectionObserver, transform/opacity만) */
+  @media (prefers-reduced-motion: no-preference){
+    .detail > *{animation:none}
+    .reveal-on .rv{opacity:0;transform:translateY(22px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+    .reveal-on .rv.in{opacity:1;transform:none}
+    .items .item{animation-duration:.8s;animation-timing-function:var(--ease)}
+  }
+  @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 </style>
 </head>
 <body>
+<a class="skip" href="#main">본문으로 건너뛰기</a>
 <div id="app"></div>
 <div class="lb" id="lb" role="dialog" aria-modal="true"><button aria-label="닫기">✕</button><img alt=""></div>
 
@@ -153,12 +299,15 @@ function matches(b) {
   const q = norm(state.q);
   if (!q) return true;
   const s = SPECIES[b.species], m = MORPHS[b.morph];
-  return norm(b.no).includes(q) || norm(m.ko + m.en + s.ko + s.en).includes(q);
+  // 번호표 끝자리는 앞에서부터 맞춰 봄 ("69"가 2691에 걸리지 않게, "7"은 07도 찾음)
+  const t = tail(b).toUpperCase();
+  return t.startsWith(q) || t.replace(/^0+/, "").startsWith(q) || (q.length > 3 && norm(b.no).startsWith(q)) ||
+    norm(m.ko + m.en + s.ko + s.en).includes(q);
 }
 
 function renderList() {
   document.title = "아마조나 분양 앵무새";
-  $app.innerHTML = header() + `<main class="wrap">
+  $app.innerHTML = header() + `<main class="wrap" id="main">
     <div class="finder">
       <label class="search">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
@@ -210,18 +359,20 @@ function update() {
     if (!g) groups.push(g = { key, s: SPECIES[b.species], m: MORPHS[b.morph], items: [] });
     g.items.push(b);
   });
+  let n = 0;
   const q = norm(state.q);
-  const hl = t => q && norm(t).includes(q) ? `<mark>${esc(t)}</mark>` : esc(t);
-  $r.innerHTML = groups.map(g => `<section class="group">
+  const hl = t => q && (t.toUpperCase().startsWith(q) || t.replace(/^0+/, "").toUpperCase().startsWith(q)) ? `<mark>${esc(t)}</mark>` : esc(t);
+  $r.innerHTML = groups.map(g => `<section class="group rv">
     <h2><span class="dot" style="background:${g.m.color}"></span>${esc(g.m.ko)} ${esc(g.s.ko)}<small>${g.items.length}마리</small></h2>
-    <div class="items">${g.items.map(b => `<a class="item${b.sold ? " sold" : ""}" href="#/${b.id}">
-      <div class="ph"><img src="${b.photo}" alt="" loading="lazy"></div>
+    <div class="items">${g.items.map(b => `<a class="item${b.sold ? " sold" : ""}" href="#/${b.id}" style="--i:${n++}">
+      <div class="ph"><img src="${b.photo}" alt="${esc(MORPHS[b.morph].ko + " " + SPECIES[b.species].ko)} 사진" loading="lazy"></div>
       <div class="info">
         <span class="tagno">${esc(b.no.slice(0, -tail(b).length))}${hl(tail(b))}</span>
         <div class="mo">${sexKo(b.sex)} · 생후 ${ageDays(b.hatch)}일</div>
         <div class="meta">${b.sold ? "분양 완료" : won(b.price)}</div>
       </div><span class="go" aria-hidden="true">›</span></a>`).join("")}</div>
   </section>`).join("");
+  reveal();
 }
 
 function renderBird(b) {
@@ -233,10 +384,13 @@ function renderBird(b) {
     <img src="${b.photo}" alt="${esc(m.ko + " " + s.ko)}">
     <div class="cap"><div class="wrap"><small>${esc(m.ko)} ${esc(m.en)}</small><h2>${esc(s.ko)}</h2></div></div>
   </div>
-  <main class="wrap">
-    <section class="sec price"><span>${b.sold ? "분양 완료" : "분양가"}</span><b>${b.sold ? "🎉" : won(b.price)}</b></section>
+  <main class="wrap detail" id="main">
+    <section class="sec summary rv" aria-label="요약">
+      <div class="row"><span class="lbl">${b.sold ? "이 아이는" : "분양가"}</span><b>${b.sold ? "분양 완료" : won(b.price)}</b></div>
+      <ul class="facts"><li>${esc(b.no)}</li><li>${sexKo(b.sex)}</li><li>생후 ${ageDays(b.hatch)}일</li></ul>
+    </section>
 
-    <section class="sec">
+    <section class="sec rv">
       <h3>기본 정보</h3>
       <dl class="kv">
         <div><dt>개체 번호</dt><dd>${esc(b.no)}</dd></div>
@@ -248,12 +402,12 @@ function renderBird(b) {
       </dl>
     </section>
 
-    <section class="sec">
-      <h3><span class="dot" style="display:inline-block;background:${m.color};margin-right:6px"></span>모프 · ${esc(m.ko)} ${esc(m.en)}</h3>
+    <section class="sec rv">
+      <h3><span class="dot" style="display:inline-block;background:${m.color};margin-right:6px;vertical-align:1px"></span>모프 · ${esc(m.ko)} ${esc(m.en)}</h3>
       <p class="desc">${esc(m.desc)}</p>
     </section>
 
-    <section class="sec">
+    <section class="sec rv">
       <h3>${esc(s.ko)}는 어떤 새인가요?</h3>
       <div class="tags"><span class="tag">수명 ${esc(s.lifespan)}</span><span class="tag">${esc(s.size)} 앵무</span></div>
       <p class="desc">${esc(s.feature)}</p>
@@ -264,25 +418,56 @@ function renderBird(b) {
       <p class="note">${esc(s.noiseNote)}</p>
     </section>
 
-    <section class="sec">
+    <section class="sec rv">
       <h3>건강 검사 결과</h3>
       <div class="check"><span class="ic">✓</span><div>
-        <b>PDD / PBFD / 앵무병 — 음성</b>
-        <small>경기도(북부) 동물위생시험소 유전자 검사(RT-PCR) · 병원체 불검출 (2026.09.01)</small>
-        <button class="cert" data-zoom="images/lab-certificate.jpg" aria-label="검사 성적서 크게 보기"><img src="images/lab-certificate.jpg" alt="동물위생시험소 검사 성적서" loading="lazy"></button>
+        <b>PDD · PBFD · 앵무병 음성</b>
+        <small>경기도(북부) 동물위생시험소 유전자 검사(RT-PCR) · 병원체 불검출 (${CERTS[b.cert].date})</small>
+        <button class="cert" data-zoom="${CERTS[b.cert].img}" aria-label="검사 성적서 크게 보기"><img src="${CERTS[b.cert].img}" alt="동물위생시험소 검사 성적서" loading="lazy"></button>
+        <small class="certnote">성적서의 개체 번호 목록에서 <b>${esc(b.no.split(" ").pop())}</b>번을 확인할 수 있어요</small>
       </div></div>
       ${b.xray ? `<div class="check"><span class="ic">✓</span><div>
-        <b>X-RAY — 이상 없음 소견</b>
+        <b>X-RAY 이상 없음 소견</b>
         <small>${esc(XRAY_HOSPITAL.name)} · ${esc(XRAY_HOSPITAL.address)}</small>
-        <p class="note" style="color:#3a423d">“${esc(XRAY_OPINION)}”</p>
-        <div class="thumbs">${b.xray.map((src, i) => `<button data-zoom="${src}" aria-label="X-RAY ${i + 1} 크게 보기"><img src="${src}" alt="X-RAY ${i + 1}" loading="lazy"><span>사진#${i + 1}</span></button>`).join("")}</div>
-      </div></div>` : `<div class="check"><span class="ic na">–</span><div><b>X-RAY / CT</b><small>미실시</small></div></div>`}
+        <p class="quote">“${esc(XRAY_OPINION)}”</p>
+        <div class="thumbs">${b.xray.map((src, i) => `<figure><button data-zoom="${src}" aria-label="X-RAY 사진#${i + 1} 크게 보기"><img src="${src}" alt="${esc(b.no)} X-RAY 사진 ${i + 1}" loading="lazy"></button><figcaption>사진#${i + 1}</figcaption></figure>`).join("")}</div>
+      </div></div>` : `<div class="check"><span class="ic na" aria-hidden="true">-</span><div><b>X-RAY / CT</b><small>미실시</small></div></div>`}
     </section>
 
-    <a class="cta" href="${EVENT.contactUrl}" target="_blank" rel="noopener">아마조나 분양 문의하기 →</a>
+    <a class="cta" href="${EVENT.contactUrl}" target="_blank" rel="noopener"><span>아마조나 분양 문의하기</span><span class="cta-ic" aria-hidden="true">↗</span></a>
+    ${pager(b)}
     <p class="disclaimer">오진이 발생한 경우 병원 측의 책임이 없음을 알려드리며, 계약서의 보상 항목에 의거<br>치명적 질병 혹은 장애의 경우 당사(아마조나)에서 책임 및 보상을 진행합니다.</p>
   </main>`;
   $app.querySelectorAll("[data-zoom]").forEach(el => el.onclick = () => openLb(el.dataset.zoom));
+  reveal();
+}
+
+// 이전/다음 아이 (목록에서 고른 필터 기준)
+function pager(b) {
+  let list = BIRDS.filter(matches);
+  if (!list.includes(b)) list = BIRDS;
+  const i = list.indexOf(b), prev = list[i - 1], next = list[i + 1];
+  const link = (x, dir) => x
+    ? `<a class="pg ${dir}" href="#/${x.id}"><small>${dir === "prev" ? "← 이전" : "다음 →"}</small><b>${esc(MORPHS[x.morph].ko)} · ${esc(x.no.split(" ").pop())}</b></a>`
+    : `<span class="pg ${dir} off"></span>`;
+  return `<nav class="pager rv" aria-label="다른 아이 보기">${link(prev, "prev")}<span class="pos">${i + 1} / ${list.length}</span>${link(next, "next")}</nav>`;
+}
+
+// ---------- 스크롤 진입 효과 ----------
+// 화면에 들어온 요소에 .in 을 붙임. 움직임 줄이기 설정이거나 IntersectionObserver가 없으면 그냥 보임
+const canReveal = "IntersectionObserver" in window && !matchMedia("(prefers-reduced-motion: reduce)").matches;
+let io;
+function reveal() {
+  if (!canReveal) return;
+  document.documentElement.classList.add("reveal-on");
+  io && io.disconnect();
+  let alive = false;
+  io = new IntersectionObserver(es => { alive = true; es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }); },
+    { rootMargin: "0px 0px -8% 0px" });
+  document.querySelectorAll(".rv:not(.in)").forEach(el => io.observe(el));
+  // 안전장치: 관찰이 1초 안에 한 번도 동작하지 않으면(인앱 브라우저·미리보기 캡처 등) 전부 바로 보이게
+  clearTimeout(reveal.t);
+  reveal.t = setTimeout(() => { if (!alive) document.querySelectorAll(".rv").forEach(el => el.classList.add("in")); }, 1000);
 }
 
 // ---------- lightbox ----------
