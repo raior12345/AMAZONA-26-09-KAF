@@ -112,12 +112,17 @@
   .search .clear[hidden]{display:none}
   .search .clear .i{width:14px;height:14px;color:inherit}
   /* 밑줄 인디케이터 세그먼트 탭 (종류) */
-  .seg{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-top:10px;overflow-x:auto;scrollbar-width:none}
+  .seg{position:relative;display:flex;gap:4px;border-bottom:1px solid var(--line);margin-top:10px;overflow-x:auto;scrollbar-width:none}
   .seg::-webkit-scrollbar{display:none}
   .seg button{flex:none;border:0;background:none;padding:10px 12px 11px;font-size:15px;font-weight:600;color:var(--muted);cursor:pointer;position:relative;white-space:nowrap}
   .seg button small{font-weight:500;margin-left:3px}
-  .seg button[aria-pressed="true"]{color:var(--text);font-weight:700}
-  .seg button[aria-pressed="true"]::after{content:"";position:absolute;left:10px;right:10px;bottom:-1px;height:2px;background:var(--primary-dark);border-radius:2px}
+  .seg button[aria-current="true"]{color:var(--text);font-weight:700}
+  .seg button[aria-current="true"] small{color:var(--brand);font-weight:700}
+  .seg button:disabled{opacity:.4;cursor:default}
+  /* 스크롤 위치를 따라 미끄러지는 밑줄 */
+  .seg-ind{position:absolute;left:0;bottom:0;height:3px;width:var(--w,0);transform:translateX(var(--x,0));background:var(--primary-dark);border-radius:3px 3px 0 0;pointer-events:none}
+  .seg.ready .seg-ind{transition:transform .35s var(--ease),width .35s var(--ease)}
+  .seg button{transition:color .25s var(--ease)}
   /* 색깔 알약 */
   .chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:10px calc(-1 * var(--gutter)) 0;padding:0 var(--gutter)}
   .chips::-webkit-scrollbar{display:none}
@@ -338,7 +343,7 @@ const sexKo = s => s === "M" ? "수컷" : s === "F" ? "암컷" : "미확인";
 const tel = t => "tel:" + t.replace(/-/g, "");
 
 // 목록 화면 상태 (상세 페이지 갔다 와도 유지)
-const state = { species: "all", morph: "all", q: "", scroll: 0 };
+const state = { morph: "all", q: "", scroll: 0 };
 
 // ---------- 공통: 헤더 · 탭바 ----------
 const TABS = [
@@ -371,7 +376,6 @@ const norm = s => s.replace(/\s/g, "").toUpperCase();
 const count = f => BIRDS.filter(f).length;
 
 function matches(b) {
-  if (state.species !== "all" && b.species !== state.species) return false;
   if (state.morph !== "all" && b.morph !== state.morph) return false;
   const q = norm(state.q);
   if (!q) return true;
@@ -413,13 +417,17 @@ function renderList() {
 
 // 검색창은 그대로 두고 필터와 결과만 다시 그림 (입력 중 키보드가 닫히지 않게)
 function update() {
-  const speciesOpts = [["all", "전체", count(() => true)],
-    ...Object.entries(SPECIES).map(([k, v]) => [k, v.ko.replace(" 앵무", ""), count(b => b.species === k)])];
-  const morphKeys = [...new Set(BIRDS.filter(b => state.species === "all" || b.species === state.species).map(b => b.morph))];
-  if (state.morph !== "all" && !morphKeys.includes(state.morph)) state.morph = "all";
+  const list = BIRDS.filter(matches);
+  // 종류 탭: 지금 보이는 목록 기준 마릿수. 누르면 그 구간으로 이동, 스크롤하면 밑줄이 따라감
+  const speciesOpts = [["all", "전체", list.length],
+    ...Object.entries(SPECIES).map(([k, v]) => [k, v.ko.replace(" 앵무", ""), list.filter(b => b.species === k).length])];
+  const morphKeys = [...new Set(BIRDS.map(b => b.morph))];
 
-  document.getElementById("species").innerHTML = speciesOpts.map(([k, l, n]) =>
-    `<button type="button" data-g="species" data-k="${k}" aria-pressed="${state.species === k}">${esc(l)}<small>${n}</small></button>`).join("");
+  const $seg = document.getElementById("species");
+  $seg.innerHTML = speciesOpts.map(([k, l, n]) =>
+    `<button type="button" data-k="${k}" aria-current="${spy.active === k}" ${n ? "" : "disabled"}>${esc(l)}<small>${n}</small></button>`).join("") +
+    `<span class="seg-ind" aria-hidden="true"></span>`;
+  $seg.querySelectorAll("button").forEach(b => b.onclick = () => goSpecies(b.dataset.k));
   const chip = (key, label, n, dot) =>
     `<button type="button" class="chip" data-g="morph" data-k="${key}" aria-pressed="${state.morph === key}">${
       dot ? `<span class="dot" style="background:${dot}"></span>` : ""}${esc(label)} <small>${n}</small></button>`;
@@ -427,11 +435,11 @@ function update() {
     morphKeys.map(k => chip(k, MORPHS[k].ko, count(b => b.morph === k), MORPHS[k].color)).join("");
   document.querySelectorAll(".finder [data-g]").forEach(c => c.onclick = () => { state[c.dataset.g] = c.dataset.k; update(); });
 
-  const list = BIRDS.filter(matches);
   const $r = document.getElementById("results");
   if (!list.length) {
     $r.innerHTML = `<div class="empty">찾는 아이가 없어요.<br>번호표의 마지막 두 자리를 입력해 보세요.<br><button type="button" id="reset">전체 보기</button></div>`;
-    document.getElementById("reset").onclick = () => { Object.assign(state, { species: "all", morph: "all", q: "" }); renderList(); };
+    document.getElementById("reset").onclick = () => { Object.assign(state, { morph: "all", q: "" }); renderList(); };
+    setupSpy();
     return;
   }
   const groups = [];
@@ -441,9 +449,11 @@ function update() {
     if (!g) groups.push(g = { key, s: SPECIES[b.species], m: MORPHS[b.morph], items: [] });
     g.items.push(b);
   });
+  const spOrder = Object.keys(SPECIES);
+  groups.sort((a, b) => spOrder.indexOf(a.key.split("/")[0]) - spOrder.indexOf(b.key.split("/")[0]));
   const q = norm(state.q);
   const hl = t => q && (t.toUpperCase().startsWith(q) || t.replace(/^0+/, "").toUpperCase().startsWith(q)) ? `<mark>${esc(t)}</mark>` : esc(t);
-  $r.innerHTML = groups.map(g => `<section class="group">
+  $r.innerHTML = groups.map(g => `<section class="group" data-species="${g.key.split("/")[0]}">
     <h2><span class="dot" style="background:${g.m.color}"></span>${esc(g.m.ko)} ${esc(g.s.ko)}<small>${g.items.length}마리</small></h2>
     <div class="items">${g.items.map(b => `<a class="item${b.sold ? " sold" : ""}" href="#/${b.id}">
       <div class="ph"><img src="${b.photo}" alt="${esc(MORPHS[b.morph].ko + " " + SPECIES[b.species].ko)} 사진" loading="lazy"></div>
@@ -453,7 +463,60 @@ function update() {
         <div class="meta">${b.sold ? "분양 완료" : won(b.price)}</div>
       </div><span class="go">${icon("caret-right")}</span></a>`).join("")}</div>
   </section>`).join("");
+  setupSpy();
 }
+
+// ---------- 종류 탭 스크롤 따라가기 ----------
+// 고정된 검색바 바로 아래 가상의 선을 기준으로, 그 선을 지난 마지막 구간의 종류를 강조
+const spy = { active: "all", io: null, endIo: null };
+const spyLine = () => (document.getElementById("hd")?.offsetHeight || 56) + (document.querySelector(".finder")?.offsetHeight || 0) + 4;
+function spyCalc() {
+  const groups = [...document.querySelectorAll(".group[data-species]")];
+  if (!groups.length) return setSpecies("all");
+  const line = spyLine();
+  let cur = "all";
+  groups.forEach(g => { if (g.getBoundingClientRect().top <= line) cur = g.dataset.species; });
+  // 맨 아래까지 내려 마지막 구간이 선에 못 닿는 경우: 마지막 종류로
+  const doc = document.documentElement;
+  if (cur !== "all" && innerHeight + doc.scrollTop >= doc.scrollHeight - 4) cur = groups[groups.length - 1].dataset.species;
+  setSpecies(cur);
+}
+function setupSpy() {
+  spy.io && spy.io.disconnect(); spy.endIo && spy.endIo.disconnect();
+  if (!("IntersectionObserver" in window)) return moveInd();
+  const line = spyLine();
+  // 선 높이의 얇은 띠: 구간 경계가 띠를 지날 때마다 다시 계산 (스크롤 이벤트 사용 안 함)
+  spy.io = new IntersectionObserver(spyCalc, { rootMargin: `-${line}px 0px -${Math.max(0, innerHeight - line - 2)}px 0px` });
+  document.querySelectorAll(".group[data-species]").forEach(g => spy.io.observe(g));
+  const end = document.querySelector("main .biz");
+  if (end) { spy.endIo = new IntersectionObserver(spyCalc); spy.endIo.observe(end); }
+  spyCalc(); moveInd();
+  requestAnimationFrame(() => document.getElementById("species")?.classList.add("ready"));
+}
+function setSpecies(k) {
+  const seg = document.getElementById("species");
+  if (!seg) return;
+  if (spy.active !== k) {
+    spy.active = k;
+    seg.querySelectorAll("button").forEach(b => b.setAttribute("aria-current", b.dataset.k === k ? "true" : "false"));
+  }
+  moveInd();
+}
+function moveInd() {
+  const seg = document.getElementById("species"), b = seg?.querySelector('button[aria-current="true"]'), ind = seg?.querySelector(".seg-ind");
+  if (!b || !ind) return;
+  ind.style.setProperty("--x", b.offsetLeft + 10 + "px");
+  ind.style.setProperty("--w", b.offsetWidth - 20 + "px");
+}
+function goSpecies(k) {
+  const smooth = matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
+  if (k === "all") { window.scrollTo({ top: 0, behavior: smooth }); return; }
+  const g = document.querySelector(`.group[data-species="${k}"]`);
+  if (!g) return;
+  setSpecies(k);
+  window.scrollTo({ top: g.getBoundingClientRect().top + window.scrollY - spyLine() + 2, behavior: smooth });
+}
+addEventListener("resize", () => { if (document.getElementById("species")) setupSpy(); });
 
 // ---------- 앵무새 상세 ----------
 function renderBird(b) {
